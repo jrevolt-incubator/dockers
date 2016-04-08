@@ -10,5 +10,7 @@ RUN mv /opt/nexus-* /opt/nexus && \
 
 ENV PATH /opt/nexus/bin:${PATH}
 
+VOLUME ["/var/nexus/data"]
+
 USER nexus
 ENTRYPOINT ["/opt/nexus/bin/nexus", "run"]
