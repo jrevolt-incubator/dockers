@@ -10,6 +10,7 @@ RUN mv /opt/nexus-* /opt/nexus && \
 
 ENV PATH /opt/nexus/bin:${PATH}
 
+EXPOSE 8081
 VOLUME ["/var/nexus/data"]
 
 USER nexus
