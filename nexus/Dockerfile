@@ -1,6 +1,6 @@
 FROM jrevolt/jre
 
-ADD nexus-3.0.0-03-unix.tar.gz /opt/
+ADD nexus-3.0.2-02-unix.tar.gz /opt/
 
 RUN mv /opt/nexus-* /opt/nexus && \
 	adduser -SD -h /var/nexus -G root nexus && \
