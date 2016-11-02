@@ -1,14 +1,17 @@
 FROM jrevolt/jre
 
-ADD nexus-3.1.0-04-unix.tar.gz /opt/nexus/
-
 RUN \
-	ln -s /opt/nexus/nexus-* /opt/nexus/current && \
-	mkdir -p /var/lib/nexus && mv /opt/nexus/sonatype-work /var/lib/nexus/ && ln -s /var/lib/nexus/sonatype-work /opt/nexus/ && \
-	adduser -SD -h /var/nexus -G root -u 200 nexus && \
-	chown -R nexus:root /opt/nexus/current/etc /var/lib/nexus
-
-ENV PATH /opt/nexus/current/bin:${PATH}
+	NEXUS_HOME="/opt/nexus" && \
+	NEXUS_DATA="/var/lib/nexus" && \
+	URL="https://sonatype-download.global.ssl.fastly.net/nexus/3/nexus-3.1.0-04-unix.tar.gz" && \
+	apk add --update curl && \
+	mkdir -p ${NEXUS_HOME} && \
+	curl -sjkL "$URL" | tar xzv -C ${NEXUS_HOME} && \
+	ln -s ${NEXUS_HOME}/nexus-* ${NEXUS_HOME}/current && \
+	mkdir -p ${NEXUS_DATA} && mv ${NEXUS_HOME}/sonatype-work ${NEXUS_DATA}/ && ln -s ${NEXUS_DATA}/sonatype-work ${NEXUS_HOME}/ && \
+	adduser -SD -h ${NEXUS_DATA} -G root -u 200 nexus && \
+	chown -R nexus:root ${NEXUS_HOME} ${NEXUS_DATA} && \
+	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 EXPOSE 8081
 VOLUME ["/var/lib/nexus"]
