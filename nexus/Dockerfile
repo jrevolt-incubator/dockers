@@ -1,9 +1,10 @@
 FROM jrevolt/jre
 
 RUN \
+	VERSION="3.2.0-01" && \
 	NEXUS_HOME="/opt/nexus" && \
 	NEXUS_DATA="/var/lib/nexus" && \
-	URL="https://sonatype-download.global.ssl.fastly.net/nexus/3/nexus-3.1.0-04-unix.tar.gz" && \
+	URL="https://sonatype-download.global.ssl.fastly.net/nexus/3/nexus-${VERSION}-unix.tar.gz" && \
 	apk add --update curl && \
 	mkdir -p ${NEXUS_HOME} && \
 	curl -sjkL "$URL" | tar xzv -C ${NEXUS_HOME} && \
