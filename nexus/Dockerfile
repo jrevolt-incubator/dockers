@@ -1,7 +1,9 @@
 FROM jrevolt/jre
 
+ADD env.sh /
+
 RUN \
-	VERSION="3.2.0-01" && \
+	source /env.sh && \
 	NEXUS_HOME="/opt/nexus" && \
 	NEXUS_DATA="/var/lib/nexus" && \
 	URL="https://sonatype-download.global.ssl.fastly.net/nexus/3/nexus-${VERSION}-unix.tar.gz" && \

@@ -2,21 +2,28 @@
 
 set -u
 
+loadenv() {
+	local name="$1"
+	[ -f $name/env.sh ] && source $name/env.sh
+}
+
 build() {
 	for name in $@; do
-		docker build -t jrevolt/$name --rm $name
+		loadenv $name
+		docker build -t jrevolt/$name:${TAG:-latest} --rm $name
 	done
 }
 
 publish() {
 	for name in $@; do
-		docker push jrevolt/$name
+		loadenv $name
+		docker push jrevolt/$name:${TAG:-latest}
 	done
 }
 
 run() {
 	local name="$1"; shift;
-	local docker_opts_dflt="-it --rm=true"
+	local docker_opts_dflt="-it --rm=true -v $HOME/.jrevolt:/root/.jrevolt"
 	docker run --name $name ${DOCKER_OPTS:-$docker_opts_dflt} --net=host --cap-add=NET_ADMIN jrevolt/$name "$@"
 }
 
