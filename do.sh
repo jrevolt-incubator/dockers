@@ -10,14 +10,15 @@ loadenv() {
 build() {
 	for name in $@; do
 		loadenv $name
-		docker build -t jrevolt/$name:${TAG:-latest} --rm $name
+		docker build -t jrevolt/$name:build --rm $name
 	done
 }
 
 publish() {
 	for name in $@; do
 		loadenv $name
-		docker push jrevolt/$name:${TAG:-latest}
+		docker tag jrevolt/$name:build jrevolt/$name:$TAG
+		docker push jrevolt/$name:$TAG
 	done
 }
 
