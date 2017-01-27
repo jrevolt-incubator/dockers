@@ -1,19 +1,20 @@
-FROM jrevolt/jdk
+FROM jrevolt/jdk:8u111
 
-RUN mkdir -p /opt && \
-	apk update && \
-	apk add wget && \
-	wget -O /tmp/gradle.zip https://services.gradle.org/distributions/gradle-3.2-bin.zip && \
-	cd /opt && unzip /tmp/gradle && \
-	ln -s /opt/gradle-* /opt/gradle && \
-	apk del wget && rm /var/cache/apk/* /tmp/gradle.zip
+ADD env.sh /
 
-RUN apk --no-cache add bash libstdc++
+RUN apk --no-cache add bash libstdc++ git wget
 RUN mkdir /var/lib/gradle
-RUN apk --no-cache add git
 
 ENV GRADLE_HOME /opt/gradle
 ENV PATH ${GRADLE_HOME}/bin:${PATH}
+
+RUN \
+   source /env.sh && \
+   mkdir -p /opt && \
+	wget -O /tmp/gradle.zip https://services.gradle.org/distributions/gradle-${VERSION}-bin.zip && \
+	cd /opt && unzip /tmp/gradle && \
+	ln -s /opt/gradle-* /opt/gradle && \
+	rm /var/cache/apk/* /tmp/gradle.zip
 
 VOLUME /var/lib/gradle
 WORKDIR /var/lib/gradle
