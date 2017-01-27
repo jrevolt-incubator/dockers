@@ -5,8 +5,9 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN \
 	# params
-	JAVA_VERSION="8u112" && \
-   JAVA_BUILD="${JAVA_VERSION}-b15" && \
+	JAVA_VERSION="8u121" && \
+   JAVA_BUILD="${JAVA_VERSION}-b13" && \
+   JAVA_HASH="e9e7ea248e2c4826b92b3f075a80e441" && \
    GLIBC_VERSION="2.23-r3" && \
 	# glibc
 	apk add --update curl wget ca-certificates && \
@@ -20,10 +21,10 @@ RUN \
 	# oracle server JRE
 	apk add --update ca-certificates java-cacerts && \
 	mkdir -p /opt && \
-	URL="http://download.oracle.com/otn-pub/java/jdk/${JAVA_BUILD}/server-jre-${JAVA_VERSION}-linux-x64.tar.gz" && \
+	URL="http://download.oracle.com/otn-pub/java/jdk/${JAVA_BUILD}/${JAVA_HASH}/server-jre-${JAVA_VERSION}-linux-x64.tar.gz" && \
 	JCEURL="http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip" && \
 	COOKIE="Cookie: oraclelicense=accept-securebackup-cookie; " && \
-	curl -sjkL --fail -H "$COOKIE" "$URL" | tar xzv -C /opt && \
+	curl -svjkL --fail -H "$COOKIE" "$URL" | tar xzv -C /opt && \
 	mv /opt/jdk* ${JAVA_HOME} && \
 	curl -sjkL -H "$COOKIE" "$JCEURL" > jce.zip && unzip jce.zip ** mv UnlimitedJCEPolicy*/* ${JAVA_HOME}/jre/lib/security/ && \
 	chown -R root:root ${JAVA_HOME} && \
