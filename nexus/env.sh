@@ -1,3 +1,3 @@
 #!/bin/bash
-VERSION="3.2.0-01"
-TAG="latest"
+VERSION="3.3.2-02"
+TAG="${VERSION}"
