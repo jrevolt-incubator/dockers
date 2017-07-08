@@ -1,24 +1,31 @@
-FROM jrevolt/jre:8u131
+FROM jrevolt/alpine:3.6.2
+
+ENV JAVA_HOME="/opt/java"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN \
-	BUILD_TOOLS="curl wget rsync" && \
 	cd /tmp && \
-	apk add --no-cache --update ca-certificates tar ${BUILD_TOOLS} && \
-	# download JDK
-	URL1="http://download.oracle.com/otn-pub/java/jdk/${JAVA_BUILD}/${JAVA_HASH}/jdk-${JAVA_VERSION}-linux-x64.tar.gz" && \
-	URL2="https://repo.greenhorn.local/repository/raw/jdk-${JAVA_VERSION}-linux-x64.tar.gz" && \
-	COOKIE="Cookie: oraclelicense=accept-securebackup-cookie; " && \
+	apk add --update curl ca-certificates java-cacerts && \
+	# oracle server JRE (alpine)
+	URL1="http://download.java.net/java/jdk9-alpine/archive/177/binaries/jdk-9-ea+177_linux-x64-musl_bin.tar.gz" && \
+	URL2="https://repo.greenhorn.local/repository/raw/jdk-9-ea+177_linux-x64-musl_bin.tar.gz" && \
 	# select local URL if available
 	{ URL="$URL1" && curl -sk --head --fail "$URL2" && URL="$URL2"; } && \
+	mkdir -p ${JAVA_HOME} && \
 	# download and install
-	curl -svjkL --fail -H "$COOKIE" "$URL" | tar xzv && rsync -rcvh /tmp/jdk*/ ${JAVA_HOME}/ && \
+	echo "GET $URL" && \
+	curl -jkL --fail "$URL" | tar xz --strip-components=1 -C ${JAVA_HOME}/ && \
+	chown -R root:root ${JAVA_HOME} && \
 	# cacerts
-	rm -f ${JAVA_HOME}/jre/lib/security/cacerts && \
-	ln -s /etc/ssl/certs/java/cacerts ${JAVA_HOME}/jre/lib/security/cacerts && \
-	# cleanup
-	apk del ${BUILD_TOOLS} && \
+	rm -f ${JAVA_HOME}/lib/security/cacerts && \
+	ln -s /etc/ssl/certs/java/cacerts ${JAVA_HOME}/lib/security/cacerts && \
+	# OS update && cleanup
+	apk del curl && \
+	apk --no-cache --update upgrade && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170521"
-RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
+LABEL OS_UPDATE="20170708"
+
+ENTRYPOINT ["java"]
+CMD ["-version"]
 
