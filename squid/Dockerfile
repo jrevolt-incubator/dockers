@@ -1,9 +1,11 @@
 FROM jrevolt/alpine
 
-RUN apk --no-cache --update add squid
+RUN apk --no-cache --update add bash squid
 
 COPY squid.conf /etc/squid/squid.conf
 COPY run.sh /run.sh
+
+RUN chmod +x /run.sh
 
 EXPOSE 3128
 VOLUME ["/etc/squid"]

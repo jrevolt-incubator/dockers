@@ -1,10 +1,8 @@
 FROM jrevolt/jre
 
-RUN apk --no-cache --update add bash
+LABEL rebuild="2"
 
-ARG VERSION="0.2.1"
-ARG URLJAR="http://repo.jrevolt.io/content/groups/public/io/jrevolt/launcher/io.jrevolt.launcher/${VERSION}/io.jrevolt.launcher-${VERSION}.jar"
-ARG URLEXE="https://raw.githubusercontent.com/jrevolt/io.jrevolt.launcher/dist/jrevolt.sh"
+RUN apk --no-cache --update add bash curl git sudo
 
 ARG APPNAME="jrevolt"
 ARG HOMEDIR="/opt/${APPNAME}"
@@ -13,19 +11,16 @@ ARG SCRIPT="${BINDIR}/jrevolt.sh"
 ARG JAR="${BINDIR}/io.jrevolt.launcher-${VERSION}.jar"
 
 RUN \
-	mkdir -p ${HOMEDIR} && mkdir -p ${BINDIR} && mkdir -p ${HOMEDIR}/.jrevolt && \
-	addgroup jrevolt && \
-	adduser -S -D -h ${HOMEDIR} -s /bin/bash jrevolt jrevolt
+	mkdir -p ${HOMEDIR} && \
+	addgroup jrevolt && adduser -S -D -h ${HOMEDIR} -s /bin/bash jrevolt jrevolt && \
+	chown jrevolt:jrevolt ${HOMEDIR}
 
 RUN \
-	apk --no-cache --update add bash curl && \
-	curl -sk -o ${SCRIPT} ${URLEXE} && chmod a+x ${SCRIPT} && \
-	curl -sk -o ${JAR} ${URLJAR} && \
-	chown -R jrevolt:jrevolt ${HOMEDIR} && \
-	apk --purge del curl
+	curl -sL https://goo.gl/yy2UxF | sudo -u jrevolt bash -ls install develop && \
+	apk del curl git sudo
 
 ENV HOME="${HOMEDIR}"
-ENV JREVOLT_LAUNCHER_JAR="${JAR}"
+ENV PATH="${HOMEDIR}/.jrevolt:$PATH"
 
 VOLUME ["${HOME}/.jrevolt"]
 ENTRYPOINT ["jrevolt.sh"]
