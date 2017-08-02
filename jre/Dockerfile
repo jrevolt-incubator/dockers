@@ -2,15 +2,16 @@ FROM jrevolt/alpine:3.6.2
 
 ENV JAVA_HOME="/opt/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+ENV BUILD=179
 
 RUN \
 	cd /tmp && \
 	apk add --update curl ca-certificates java-cacerts && \
 	# oracle server JRE (alpine)
-	URL1="http://download.java.net/java/jdk9-alpine/archive/177/binaries/serverjre-9-ea+177_linux-x64-musl_bin.tar.gz" && \
-	URL2="https://repo.greenhorn.local/repository/raw/serverjre-9-ea+177_linux-x64-musl_bin.tar.gz" && \
+	URL1="http://download.java.net/java/jdk9-alpine/archive/${BUILD}/binaries/serverjre-9-ea+${BUILD}_linux-x64-musl_bin.tar.gz" && \
+	URL2="https://repo.greenhorn.local/repository/raw/serverjre-9-ea+${BUILD}_linux-x64-musl_bin.tar.gz" && \
 	# select local URL if available
-	{ URL="$URL1" && curl -sk --head --fail "$URL2" && URL="$URL2"; } && \
+	{ URL="$URL1" && curl -sk --head --fail "$URL2" && URL="$URL2" || URL="$URL1"; } && \
 	mkdir -p ${JAVA_HOME} && \
 	# download and install
 	echo "GET $URL" && \
