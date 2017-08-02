@@ -1,10 +1,10 @@
-FROM jrevolt/alpine:3.5.2
+FROM jrevolt/alpine:3.6.2
 
 ENV JAVA_HOME="/opt/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-ENV JAVA_VERSION="8u131"
-ENV JAVA_BUILD="${JAVA_VERSION}-b11"
-ENV JAVA_HASH="d54c1d3a095b4ff2b6607d096fa80163"
+ENV JAVA_VERSION="8u144"
+ENV JAVA_BUILD="${JAVA_VERSION}-b01"
+ENV JAVA_HASH="090f390dda5b47b9b721c7dfaa008135"
 ENV GLIBC_VERSION="2.25-r0"
 
 RUN \
@@ -27,7 +27,7 @@ RUN \
 	JCEURL="http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip" && \
 	COOKIE="Cookie: oraclelicense=accept-securebackup-cookie; " && \
 	# select local URL if available
-	{ URL="$URL1" && curl -sk --head --fail "$URL2" && URL="$URL2"; } && \
+	{ curl -sk --head --fail "$URL2" && URL="$URL2" || URL="$URL1"; } && \
 	mkdir -p ${JAVA_HOME} && \
 	# download and install
 	echo "GET $URL" && \
@@ -45,7 +45,7 @@ RUN \
 	apk del curl wget && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170224"
+LABEL OS_UPDATE="20170802"
 RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 ENTRYPOINT ["java"]

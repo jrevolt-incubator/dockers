@@ -1,4 +1,4 @@
-FROM jrevolt/jre:8u131
+FROM jrevolt/jre:8u144
 
 RUN \
 	BUILD_TOOLS="curl wget rsync" && \
@@ -9,7 +9,7 @@ RUN \
 	URL2="https://repo.greenhorn.local/repository/raw/jdk-${JAVA_VERSION}-linux-x64.tar.gz" && \
 	COOKIE="Cookie: oraclelicense=accept-securebackup-cookie; " && \
 	# select local URL if available
-	{ URL="$URL1" && curl -sk --head --fail "$URL2" && URL="$URL2"; } && \
+	{ curl -sk --head --fail "$URL2" && URL="$URL2" || URL="$URL1"; } && \
 	# download and install
 	curl -svjkL --fail -H "$COOKIE" "$URL" | tar xzv && rsync -rcvh /tmp/jdk*/ ${JAVA_HOME}/ && \
 	# cacerts
@@ -19,6 +19,6 @@ RUN \
 	apk del ${BUILD_TOOLS} && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170521"
+LABEL OS_UPDATE="20170802"
 RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 

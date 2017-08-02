@@ -23,6 +23,15 @@ publish() {
 	done
 }
 
+publish_latest() {
+	for name in $@; do
+		loadenv $name
+		docker tag jrevolt/$name:build jrevolt/$name:latest
+		docker push jrevolt/$name:latest
+		echo "Pushed jrevolt/$name:latest"
+	done
+}
+
 run() {
 	local name="$1"; shift;
 	local docker_opts_dflt="-it --rm=true -v $HOME/.jrevolt:/root/.jrevolt"
