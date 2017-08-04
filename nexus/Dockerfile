@@ -1,4 +1,4 @@
-FROM jrevolt/jre:8u131
+FROM jrevolt/jre:8u144
 
 ADD env.sh /
 
