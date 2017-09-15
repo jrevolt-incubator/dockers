@@ -2,7 +2,7 @@ FROM jrevolt/jdk:8u144
 
 ADD env.sh /
 
-RUN apk --no-cache add bash libstdc++ git wget
+RUN apk --no-cache add bash libstdc++ git wget gnupg
 RUN mkdir /var/lib/gradle
 
 ENV GRADLE_HOME /opt/gradle
@@ -15,6 +15,9 @@ RUN \
 	cd /opt && unzip /tmp/gradle && \
 	ln -s /opt/gradle-* /opt/gradle && \
 	rm -rf /var/cache/apk/* /tmp/gradle.zip
+
+LABEL OS_UPDATE="20170914"
+RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 VOLUME /var/lib/gradle
 WORKDIR /var/lib/gradle
