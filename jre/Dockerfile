@@ -2,7 +2,7 @@ FROM jrevolt/alpine:3.6.2
 
 ENV JAVA_HOME="/opt/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-ENV BUILD=179
+ENV BUILD=181
 
 RUN \
 	cd /tmp && \
@@ -25,7 +25,8 @@ RUN \
 	apk --no-cache --update upgrade && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170708"
+LABEL OS_UPDATE="20171003"
+RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 ENTRYPOINT ["java"]
 CMD ["-version"]

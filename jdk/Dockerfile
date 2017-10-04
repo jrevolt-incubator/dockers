@@ -2,20 +2,20 @@ FROM jrevolt/alpine:3.6.2
 
 ENV JAVA_HOME="/opt/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-ENV BUILD=179
+ENV BUILD=181
 
 RUN \
 	cd /tmp && \
 	apk add --update curl ca-certificates java-cacerts && \
 	# oracle server JRE (alpine)
 	URL1="http://download.java.net/java/jdk9-alpine/archive/${BUILD}/binaries/jdk-9-ea+${BUILD}_linux-x64-musl_bin.tar.gz" && \
-	URL2="https://repo.greenhorn.local/repository/raw/jdk-9-ea+177_linux-x64-musl_bin.tar.gz" && \
+	URL2="https://repo.greenhorn.local/repository/raw/jdk-9-ea+${BUILD}_linux-x64-musl_bin.tar.gz" && \
 	# select local URL if available
 	{ curl -sk --head --fail "$URL2" && URL="$URL2" || URL="$URL1"; } && \
 	mkdir -p ${JAVA_HOME} && \
 	# download and install
 	echo "GET $URL" && \
-	curl -jkL --fail "$URL" | tar xz --strip-components=1 -C ${JAVA_HOME}/ && \
+	curl -jkL --fail "$URL" | tar xz -C ${JAVA_HOME}/ --strip-components=1 && \
 	chown -R root:root ${JAVA_HOME} && \
 	# cacerts
 	rm -f ${JAVA_HOME}/lib/security/cacerts && \
@@ -25,7 +25,8 @@ RUN \
 	apk --no-cache --update upgrade && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170708"
+LABEL OS_UPDATE="20171003"
+RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 ENTRYPOINT ["java"]
 CMD ["-version"]
