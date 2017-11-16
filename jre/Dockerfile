@@ -2,10 +2,12 @@ FROM jrevolt/alpine:3.6.2
 
 ENV JAVA_HOME="/opt/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-ENV JAVA_VERSION="8u144"
-ENV JAVA_BUILD="${JAVA_VERSION}-b01"
-ENV JAVA_HASH="090f390dda5b47b9b721c7dfaa008135"
-ENV GLIBC_VERSION="2.25-r0"
+ENV JAVA_VERSION="8u152"
+ENV JAVA_BUILD="${JAVA_VERSION}-b16"
+ENV JAVA_HASH="aa0333dd3019491ca4f6ddbe78cdb6d0"
+ENV GLIBC_VERSION="2.26-r0"
+
+#http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jre-8u152-linux-x64.tar.gz
 
 RUN \
 	cd /tmp && \
