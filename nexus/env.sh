@@ -1,3 +1,3 @@
 #!/bin/bash
-VERSION="3.7.0-04"
+VERSION="3.7.1-02"
 TAG="${VERSION}"
