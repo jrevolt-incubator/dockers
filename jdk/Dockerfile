@@ -1,4 +1,4 @@
-FROM jrevolt/jre:8u144
+FROM jrevolt/jre:8u162
 
 RUN \
 	BUILD_TOOLS="curl wget rsync" && \
@@ -19,6 +19,6 @@ RUN \
 	apk del ${BUILD_TOOLS} && \
 	rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
-LABEL OS_UPDATE="20170802"
+LABEL OS_UPDATE="20180215"
 RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
