@@ -1,4 +1,4 @@
-FROM jrevolt/jdk:8u144
+FROM jrevolt/jdk:8u162
 
 ADD env.sh /
 
@@ -16,7 +16,7 @@ RUN \
 	ln -s /opt/gradle-* /opt/gradle && \
 	rm -rf /var/cache/apk/* /tmp/gradle.zip
 
-LABEL OS_UPDATE="20170914"
+LABEL OS_UPDATE="20180215"
 RUN apk --no-cache --update upgrade && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 VOLUME /var/lib/gradle
