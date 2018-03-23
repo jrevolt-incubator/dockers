@@ -8,15 +8,17 @@ loadenv() {
 }
 
 build() {
-	for name in $@; do
-		loadenv $name
-		docker build --pull -t jrevolt/$name:build --rm $name
+	for path in $@; do
+		loadenv $path
+		local name="${path/\/*/}"
+		docker build --pull=${pull:-true} -t jrevolt/${name/\/*/}:build --rm $name
 	done
 }
 
 publish() {
-	for name in $@; do
-		loadenv $name
+	for path in $@; do
+		loadenv $path
+		local name="${path/\/*/}"
 		docker tag jrevolt/$name:build jrevolt/$name:$TAG
 		docker push jrevolt/$name:$TAG
 		echo "Pushed jrevolt/${name}:${TAG}"
@@ -24,8 +26,9 @@ publish() {
 }
 
 publish_latest() {
-	for name in $@; do
-		loadenv $name
+	for path in $@; do
+		loadenv $path
+		local name="${path/\/*/}"
 		docker tag jrevolt/$name:build jrevolt/$name:latest
 		docker push jrevolt/$name:latest
 		echo "Pushed jrevolt/$name:latest"
@@ -33,8 +36,9 @@ publish_latest() {
 }
 
 run() {
-	local name="$1"; shift;
-	local docker_opts_dflt="-it --rm=true -v $HOME/.jrevolt:/root/.jrevolt"
+	local path="$1"; shift;
+	local name="${path/\/*/}"
+	local docker_opts_dflt="--rm=true -v $HOME/.jrevolt:/root/.jrevolt"
 	docker run --name $name ${DOCKER_OPTS:-$docker_opts_dflt} --net=host --cap-add=NET_ADMIN jrevolt/$name "$@"
 }
 
