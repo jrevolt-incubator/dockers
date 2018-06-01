@@ -15,8 +15,9 @@ RUN \
 	curl -sjkL "$URL" | tar xzv -C ${NEXUS_HOME} && \
 	ln -s ${NEXUS_HOME}/nexus-* ${NEXUS_HOME}/current && \
 	mkdir -p ${NEXUS_DATA} && mv ${NEXUS_HOME}/sonatype-work ${NEXUS_DATA}/ && ln -s ${NEXUS_DATA}/sonatype-work ${NEXUS_HOME}/ && \
-	adduser -SD -h ${NEXUS_DATA} -G root -u 200 nexus && \
-	chown -R nexus:root ${NEXUS_HOME} ${NEXUS_DATA} && \
+	addgroup nexus && \
+	adduser -SD -h ${NEXUS_DATA} -s /bin/sh -G nexus -u 200 nexus && \
+	chown -R nexus:nexus ${NEXUS_HOME} ${NEXUS_DATA} && \
 	apk del curl && rm -rf /var/cache/apk/* /var/log/* /tmp/*
 
 EXPOSE 8081
