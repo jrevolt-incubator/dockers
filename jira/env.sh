@@ -1,2 +1,3 @@
 #!/bin/bash
-TAG="7.6.0"
+TAG="7.11.1"
+VERSION=$TAG
