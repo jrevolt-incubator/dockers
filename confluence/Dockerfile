@@ -1,4 +1,4 @@
-FROM cptactionhank/atlassian-confluence:6.3.4
+FROM cptactionhank/atlassian-confluence:6.10.1
 USER root
 ADD /fixup.sh /
 RUN /fixup.sh && rm /fixup.sh
