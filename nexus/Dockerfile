@@ -1,27 +1,21 @@
-FROM jrevolt/jre:8u162
+FROM jrevolt/alpine as build
+ARG VERSION
+ARG URL="http://download.sonatype.com/nexus/3/nexus-${VERSION}-unix.tar.gz"
+RUN apk add -U curl
+RUN curl -sjkL "$URL" | tar xzv && mv nexus-${VERSION} nexus
 
-ADD env.sh /
+FROM jrevolt/alpine
 
 RUN \
-	source /env.sh && \
-	NEXUS_HOME="/opt/nexus" && \
-	NEXUS_DATA="/var/lib/nexus" && \
-	URL="http://download.sonatype.com/nexus/3/nexus-${VERSION}-unix.tar.gz" && \
-	apk add --update --no-cache curl && \
-	echo "Latest:" && \
-	curl -s --head "https://sonatype-download.global.ssl.fastly.net/nexus/3/latest-unix.tar.gz" | grep "Location:" && \
-	echo "Configured: $URL" && \
-	mkdir -p ${NEXUS_HOME} && \
-	curl -sjkL "$URL" | tar xzv -C ${NEXUS_HOME} && \
-	ln -s ${NEXUS_HOME}/nexus-* ${NEXUS_HOME}/current && \
-	mkdir -p ${NEXUS_DATA} && mv ${NEXUS_HOME}/sonatype-work ${NEXUS_DATA}/ && ln -s ${NEXUS_DATA}/sonatype-work ${NEXUS_HOME}/ && \
-	addgroup nexus && \
-	adduser -SD -h ${NEXUS_DATA} -s /bin/sh -G nexus -u 200 nexus && \
-	chown -R nexus:nexus ${NEXUS_HOME} ${NEXUS_DATA} && \
-	apk del curl && rm -rf /var/cache/apk/* /var/log/* /tmp/*
-
-EXPOSE 8081
-VOLUME ["/var/lib/nexus"]
+	apk --no-cache --update --upgrade add openjdk8-jre && \
+	addgroup -g 500 nexus && adduser -SD -h /var/lib/nexus -s /bin/sh -G nexus -u 500 nexus && \
+	mkdir -p /opt && ln -s /var/lib/nexus/sonatype-work /opt/sonatype-work
 
 USER nexus
-ENTRYPOINT ["/opt/nexus/current/bin/nexus", "run"]
+VOLUME /var/lib/nexus
+EXPOSE 8081
+CMD ["/opt/nexus/bin/nexus", "run"]
+
+COPY --from=build /nexus /opt/nexus
+COPY --from=build --chown=nexus:nexus /sonatype-work /var/lib/nexus/sonatype-work
+
