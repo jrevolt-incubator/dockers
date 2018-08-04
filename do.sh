@@ -11,7 +11,10 @@ build() {
 	for path in $@; do
 		loadenv $path
 		local name="${path/\/*/}"
-		docker build --pull=${pull:-true} -t jrevolt/${name/\/*/}:build --rm $name
+		docker build --pull=${pull:-true} --rm \
+			--build-arg VERSION=${VERSION} \
+			-t jrevolt/${name}:build \
+			$path
 	done
 }
 
